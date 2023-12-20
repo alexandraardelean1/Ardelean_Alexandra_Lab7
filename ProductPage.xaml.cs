@@ -5,7 +5,6 @@ namespace Ardelean_Alexandra_Lab7;
 public partial class ProductPage : ContentPage
 {
     ShopList sl;
-
     public ProductPage(ShopList slist)
     {
         InitializeComponent();
@@ -43,6 +42,5 @@ public partial class ProductPage : ContentPage
             p.ListProducts = new List<ListProduct> { lp };
             await Navigation.PopAsync();
         }
-
     }
 }

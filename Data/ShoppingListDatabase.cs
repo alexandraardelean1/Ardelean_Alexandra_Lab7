@@ -1,8 +1,12 @@
-﻿using SQLite;
+﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using SQLite;
 using System.Threading.Tasks;
 using Ardelean_Alexandra_Lab7.Models;
-using System.Collections;
+
 
 namespace Ardelean_Alexandra_Lab7.Data
 {
@@ -16,7 +20,12 @@ namespace Ardelean_Alexandra_Lab7.Data
             _database.CreateTableAsync<Product>().Wait();
             _database.CreateTableAsync<ListProduct>().Wait();
         }
-
+        public Task<int> DeleteProductFromShopListAsync(int productId, int shopListId)
+        {
+            return _database.Table<ListProduct>()
+                .Where(lp => lp.ProductID == productId && lp.ShopListID == shopListId)
+                .DeleteAsync();
+        }
         public Task<int> SaveProductAsync(Product product)
         {
             if (product.ID != 0)
@@ -37,15 +46,6 @@ namespace Ardelean_Alexandra_Lab7.Data
             return _database.Table<Product>().ToListAsync();
         }
 
-        internal Task SaveShopListAsync(ShopList slist)
-        {
-            throw new NotImplementedException();
-        }
-
-        internal Task DeleteShopListAsync(ShopList slist)
-        {
-            throw new NotImplementedException();
-        }
         public Task<int> SaveListProductAsync(ListProduct listp)
         {
             if (listp.ID != 0)
@@ -57,6 +57,10 @@ namespace Ardelean_Alexandra_Lab7.Data
                 return _database.InsertAsync(listp);
             }
         }
+        public Task<List<ShopList>> GetShopListsAsync()
+        {
+            return _database.Table<ShopList>().ToListAsync();
+        }
         public Task<List<Product>> GetListProductsAsync(int shoplistid)
         {
             return _database.QueryAsync<Product>(
@@ -66,9 +70,21 @@ namespace Ardelean_Alexandra_Lab7.Data
             shoplistid);
         }
 
-        internal Task<IEnumerable> GetShopListsAsync()
+        internal Task DeleteShopListAsync(ShopList slist)
         {
-            throw new NotImplementedException();
+            return _database.DeleteAsync(slist);
+        }
+        public Task<int> SaveShopListAsync(ShopList slist)
+        {
+            if (slist.ID != 0)
+            {
+                return _database.UpdateAsync(slist);
+            }
+            else
+            {
+                return _database.InsertAsync(slist);
+            }
         }
     }
+
 }
